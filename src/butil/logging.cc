@@ -122,7 +122,7 @@ DEFINE_bool(crash_on_fatal_log, false,
 DEFINE_bool(print_stack_on_check, true,
             "Print the stack trace when a CHECK was failed");
 
-DEFINE_int32(v, 0, "Show all VLOG(m) messages for m <= this."
+DEFINE_int32(v1, 0, "Show all VLOG(m) messages for m <= this."
              " Overridable by --vmodule.");
 DEFINE_string(vmodule, "", "per-module verbose level."
               " Argument is a comma-separated list of MODULE_NAME=LOG_LEVEL."
@@ -1494,8 +1494,8 @@ static int vlog_site_list_add(VLogSite* site,
         *expected_module_list = vmodule_list;
         return -1;
     }
-    if (*expected_default_v != FLAGS_v) {
-        *expected_default_v = FLAGS_v;
+    if (*expected_default_v != FLAGS_v1) {
+        *expected_default_v = FLAGS_v1;
         return -1;
     }
     site->set_next(vlog_site_list);
@@ -1510,7 +1510,7 @@ bool add_vlog_site(const int** v, const char* filename, int line_no,
         return false;
     }
     VModuleList* module_list = vmodule_list;
-    int default_v = FLAGS_v;
+    int default_v = FLAGS_v1;
     do {
         site->v() = default_v;
         if (module_list) {
@@ -1564,7 +1564,7 @@ static int on_reset_vmodule(const char* vmodule) {
             old_vlog_site_list = vlog_site_list;
         }
         for (VLogSite* p = old_vlog_site_list; p; p = p->next()) {
-            p->v() = FLAGS_v;
+            p->v() = FLAGS_v1;
             module_list->find_verbose_level(
                 p->module(), p->full_module(), &p->v());
         }
@@ -1623,7 +1623,7 @@ static bool validate_v(const char*, int32_t v) {
 }
 
 const bool ALLOW_UNUSED validate_v_dummy = GFLAGS_NS::RegisterFlagValidator(
-    &FLAGS_v, &validate_v);
+    &FLAGS_v1, &validate_v);
 
 static bool PassValidate(const char*, bool) {
     return true;
